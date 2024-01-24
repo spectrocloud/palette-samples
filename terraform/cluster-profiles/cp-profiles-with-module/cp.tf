@@ -16,6 +16,9 @@ module "primary-cp-1-0-0" {
     "kubernetes"  = "1.27.5"
     "ubuntu-aws"  = "22.04"
   }
+  custom_yaml_files = {
+    "kubernetes" = file("${path.module}/templates/kubernetes.yaml")
+  }
 }
 
 module "primary-cp-1-0-1" {

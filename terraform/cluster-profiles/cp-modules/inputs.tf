@@ -51,12 +51,14 @@ variable "pack_order" {
 variable "packs" {
   type        = map(string)
   description = "A list "
-  default = {
-    "csi-aws-ebs" = "1.22.0"
-    "cni-calico"  = "3.26.1"
-    "kubernetes"  = "1.27.5"
-    "ubuntu-aws"  = "22.04"
-  }
+  default     = {}
+}
+
+
+variable "custom_yaml_files" {
+  type        = map(string)
+  description = "The file path to the custom YAML file that matches the pack name its values are overriding. Use the function 'file() to read the file. Example:  'kubernetes: 'file(path/to/file)'"
+  default     = {}
 }
 
 variable "tags" {
