@@ -17,7 +17,7 @@ resource "spectrocloud_cluster_profile" "profile" {
       name   = pack.value.name
       tag    = pack.value.pack_data.version
       uid    = pack.value.pack_data.id
-      values = pack.value.pack_data.values
+      values = lookup(var.custom_yaml_files, pack.value.name, null) != null ? var.custom_yaml_files[pack.value.name] : pack.value.pack_data.values
     }
   }
 
