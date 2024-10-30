@@ -12,22 +12,22 @@ The **Cluster Scanner** tool uses the Palette Go SDK to scan your Palette enviro
 
 ## Usage
 
-1. Open a terminal window and export your Palette URL. Replace `<your-palette-url>` with your Palette URL, for example, `console.spectrocloud.com`.
+1. Open a terminal window and export your Palette URL. Substitute `<REPLACE_ME>` with your Palette URL, for example, `console.spectrocloud.com`.
 
    ```shell
-   export PALETTE_HOST=<your-palette-url>
+   export PALETTE_HOST=<REPLACE_ME>
    ```
 
-2. Export your Palette API key. Replace `<your-palette-api-key>` with your Palette API key.
+2. Export your Palette API key. Replace `<REPLACE_ME>` with your Palette API key.
 
    ```shell
-   export PALETTE_API_KEY=<your-palette-api-key>
+   export PALETTE_API_KEY=<REPLACE_ME>
    ```
 
-3. To scan a specific project, export the project's UID. Replace `<your-palette-project>` with the Palette project UID. If no project is provided, the tool assumes a tenant scope and scans clusters across all projects.
+3. To scan a specific project, export the project's UID. Substitute `<REPLACE_ME>` with the Palette project UID. If no project is provided, the tool assumes a tenant scope and scans clusters across all projects.
 
    ```shell
-   export PALETTE_PROJECT_UID=<your-palette-project>
+   export PALETTE_PROJECT_UID=<REPLACE_ME>
    ```
 
 4. Navigate to the `cluster-scanner` folder.
