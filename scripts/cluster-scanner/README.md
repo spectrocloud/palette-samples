@@ -4,7 +4,7 @@ The **Cluster Scanner** tool uses the Palette Go SDK to scan your Palette enviro
 
 ## Prerequisites
 
-- Go version 1.22.5 or later
+- Go version 1.22 or later
 - Git
 - The `palette-samples` repository available locally
 - A Palette acount
@@ -39,7 +39,7 @@ The **Cluster Scanner** tool uses the Palette Go SDK to scan your Palette enviro
 5. Issue the command below to download the required Palette SDK modules.
 
    ```shell
-   go get
+   go get ./...
    ```
 
 6. Execute the `cluster-scanner` application.

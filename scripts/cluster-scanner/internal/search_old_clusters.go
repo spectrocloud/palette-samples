@@ -8,16 +8,14 @@ import (
 	"github.com/spectrocloud/palette-sdk-go/api/models"
 )
 
-func SearchOldClusters (clusters []*models.V1SpectroClusterSummary, logger *slog.Logger) bool {
+func SearchOldClusters (clusters []*models.V1SpectroClusterSummary, logger *slog.Logger) (bool, string) {
 	// Variable to keep track of any found clusters older than 24h
 	foundOldCluster := false
 
 	// List the clusters that are running for more than 24h
 	for _, cluster := range clusters {
-		creationTime := cluster.Metadata.CreationTimestamp
-		timeValue := time.Time(creationTime)
-		timeNow := time.Now()
-		clusterAge := timeNow.Sub(timeValue)
+		timeValue := time.Time(cluster.Metadata.CreationTimestamp)
+		clusterAge := time.Now().Sub(timeValue)
 
 		if clusterAge.Hours() >= 24 {
 			foundOldCluster = true
@@ -26,5 +24,5 @@ func SearchOldClusters (clusters []*models.V1SpectroClusterSummary, logger *slog
 		} 
 	}
 	
-	return foundOldCluster
+	return foundOldCluster, message
 }
