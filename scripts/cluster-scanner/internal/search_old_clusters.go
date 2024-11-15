@@ -2,19 +2,17 @@ package internal
 
 import (
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/spectrocloud/palette-sdk-go/api/models"
 )
 
 // SearchOldClusters checks for clusters that have been running for more than 24 hours.
-// It returns a boolean indicating if any old clusters were found and a message
-// with the clusters' information.
-func SearchOldClusters (clusters []*models.V1SpectroClusterSummary, logger *slog.Logger) (bool, string) {
-	// Variable to keep track of any found clusters older than 24 hours
-	foundOldCluster := false
-	var message string
+// It takes a list of cluster summaries and returns a slice of messages with the
+// information of the clusters that were found.
+func SearchOldClusters(clusters []*models.V1SpectroClusterSummary) ([]string, error) {
+	// Slice of strings to keep track of any found clusters older than 24 hours
+	var messageArray []string
 
 	// Iterate through the clusters to find those running for more than 24 hours
 	for _, cluster := range clusters {
@@ -22,10 +20,13 @@ func SearchOldClusters (clusters []*models.V1SpectroClusterSummary, logger *slog
 		clusterAge := time.Now().Sub(timeValue)
 
 		if clusterAge.Hours() >= 24 {
-			foundOldCluster = true
-			message = fmt.Sprintf("The %s cluster named %s has been running for %s. Are you sure you need this cluster?", cluster.SpecSummary.CloudConfig.CloudType, cluster.Metadata.Name, PrintFormattedAge(clusterAge))
-		} 
+			age, err := GetFormattedAge(clusterAge)
+			if err != nil {
+				return nil, err
+			}
+			message := fmt.Sprintf("The %s cluster named %s has been running for %s. Are you sure you need this cluster?", cluster.SpecSummary.CloudConfig.CloudType, cluster.Metadata.Name, *age)
+			messageArray = append(messageArray, message)
+		}
 	}
-	
-	return foundOldCluster, message
+	return messageArray, nil
 }
