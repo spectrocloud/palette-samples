@@ -60,6 +60,7 @@ func main() {
 		os.Exit(2)
 	}
 	if len(messageArray) != 0 {
+		logger.Info("The following clusters have been running for more than 24 hours. Please delete them if they are no longer needed.")
 		for _, message := range messageArray {
 			logger.Info(message)
 		}

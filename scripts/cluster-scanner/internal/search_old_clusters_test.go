@@ -42,7 +42,7 @@ func TestSearchOldClusters (t *testing.T) {
 				createSummary("-30h", "test-cluster", "aws"),
 			},
 			output: []string{
-				"The aws cluster named test-cluster has been running for 1 days 6 hours. Are you sure you need this cluster?",
+				"-'test-cluster' cluster (aws) - 1 days 6 hours",
 			},
 		},
 		"two clusters older than 24h":{
@@ -51,8 +51,8 @@ func TestSearchOldClusters (t *testing.T) {
 				createSummary("-50h", "test-cluster-azure", "azure"),
 			},
 			output: []string{
-				"The aws cluster named test-cluster has been running for 1 days 6 hours. Are you sure you need this cluster?",
-				"The azure cluster named test-cluster-azure has been running for 2 days 2 hours. Are you sure you need this cluster?",
+				"-'test-cluster' cluster (aws) - 1 days 6 hours",
+				"-'test-cluster-azure' cluster (azure) - 2 days 2 hours",
 			},
 		},
 		"one cluster with 24h":{
@@ -60,7 +60,7 @@ func TestSearchOldClusters (t *testing.T) {
 				createSummary("-24h", "test-cluster", "aws"),
 			},
 			output: []string{
-				"The aws cluster named test-cluster has been running for 1 days . Are you sure you need this cluster?",
+				"-'test-cluster' cluster (aws) - 1 days ",
 			},
 		},
 		"one cluster with less than 24h":{
