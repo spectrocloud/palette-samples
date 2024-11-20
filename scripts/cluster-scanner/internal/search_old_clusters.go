@@ -17,7 +17,7 @@ func SearchOldClusters(clusters []*models.V1SpectroClusterSummary) ([]string, er
 	// Iterate through the clusters to find those running for more than 24 hours
 	for _, cluster := range clusters {
 		timeValue := time.Time(cluster.Metadata.CreationTimestamp)
-		clusterAge := time.Now().Sub(timeValue)
+		clusterAge := time.Since(timeValue)
 
 		if clusterAge.Hours() >= 24 {
 			age, err := GetFormattedAge(clusterAge)

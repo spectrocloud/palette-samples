@@ -16,6 +16,7 @@ type TestCaseSearch struct {
 
 func TestSearchOldClusters (t *testing.T) {
 	now := time.Now()
+
 	parseTime := func (now time.Time, input string) time.Time {
 		creationDate, _ := time.ParseDuration(input)
 		age := now.Add(creationDate)
@@ -96,16 +97,12 @@ func TestSearchOldClusters (t *testing.T) {
 				t.Errorf("Lenghts mismatch. Got %v elements, want %v elements", len(clustersGot), len(value.output))
 			}
 			for _, got := range clustersGot {
-				found := false
 				for _, want := range value.output {
 					if got == want {
-						found = true
 						return 
 					}
 				}
-				if !found {
-					t.Errorf("Got unexpected value %v, want %v", got, value.output)
-				}
+				t.Errorf("Got unexpected value %v, want %v", got, value.output)
 			}
 		})
 	}
