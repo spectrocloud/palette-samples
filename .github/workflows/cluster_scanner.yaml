@@ -1,0 +1,44 @@
+name: Cluster Scanner
+
+on:
+  # For test purposes. Trigger it on pushes to the cluster-scanner branch.
+  push:
+    branches:
+      - cluster-scanner
+  # It runs every Friday, 9:30 UTC. The schedule job only works if the workflow is available in the main branch.
+  #schedule:
+  #  - cron: "30 9 * * 5"
+  workflow_dispatch:
+
+env:
+  PALETTE_API_KEY: ${{ secrets.SPECTROCLOUD_API_KEY }}
+  PALETTE_HOST: ${{ secrets.SPECTROCLOUD_HOST }}
+  PALETTE_PROJECT_UID: ${{ secrets.PALETTE_PROJECT_UID }}
+
+jobs:
+  scan-clusters:
+    name: cluster-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "palette-samples/scripts/cluster-scanner/go.mod"
+
+      - name: Install dependencies
+        run: |
+          cd scripts/cluster-scanner/
+          go get ./...
+
+      - name: Execute tests
+        run: go test ./...
+
+      - name: Execute the cluster scanner application
+        run: go run .
+
+      # Get the output
+      # Ignore Slack output if there are no clusters running
+      # Send slack notification if output is different than what was planned
