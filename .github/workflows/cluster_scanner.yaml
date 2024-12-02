@@ -23,10 +23,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Debug working dir
+        run: |
+          pwd
+          ls
+
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: "palette-samples/scripts/cluster-scanner/go.mod"
+          go-version-file: "scripts/cluster-scanner/go.mod"
 
       - name: Install dependencies
         run: |
