@@ -23,11 +23,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Debug working dir
-        run: |
-          pwd
-          ls
-
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
@@ -39,10 +34,14 @@ jobs:
           go get ./...
 
       - name: Execute tests
-        run: go test ./...
+        run: |
+          cd scripts/cluster-scanner/
+          go test ./...
 
       - name: Execute the cluster scanner application
-        run: go run .
+        run: |
+          cd scripts/cluster-scanner/
+          go run .
 
       # Get the output
       # Ignore Slack output if there are no clusters running
