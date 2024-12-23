@@ -53,13 +53,12 @@ jobs:
         if: env.CLUSTERS_FOUND == 'true'
         uses: rtCamp/action-slack-notify@v2.3.2
         with:
-          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-          SLACK_TOKEN: ${{ secrets.SLACK_PRIVATE_TEAM_TOKEN }}
-          #SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
+          #SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          #SLACK_TOKEN: ${{ secrets.SLACK_PRIVATE_TEAM_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
           SLACK_USERNAME: "spectromate"
-          SLACK_ICON_EMOJI: ":robot_face:"
+          SLACK_ICON_EMOJI: ":clock1:"
           SLACK_COLOR: "good"
           SLACKIFY_MARKDOWN: true
-          ENABLE_ESCAPES: true
           MESSAGE: |
             $(cat scripts/cluster-scanner/result.log)
