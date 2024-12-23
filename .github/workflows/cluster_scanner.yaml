@@ -1,13 +1,13 @@
 name: Cluster Scanner
 
 on:
-  # For test purposes. Trigger it on pushes to the cluster-scanner branch.
+  # For test purposes. Trigger the pipeline on pushes to the cluster-scanner branch.
   push:
     branches:
       - cluster-scanner
   # It runs every Friday, 9:30 UTC. The schedule job only works if the workflow is available in the main branch.
-  #schedule:
-  #  - cron: "30 9 * * 5"
+  schedule:
+    - cron: "30 9 * * 5"
   workflow_dispatch:
 
 env:
@@ -28,37 +28,38 @@ jobs:
         with:
           go-version-file: "scripts/cluster-scanner/go.mod"
 
-      - name: Install dependencies
+      - name: Install Dependencies
         working-directory: scripts/cluster-scanner
         run: go get ./...
 
-      - name: Execute tests
+      - name: Execute Tests
         working-directory: scripts/cluster-scanner
         run: go test ./...
 
-      - name: Execute the cluster scanner application
-        id: run_cluster_scanner
+      - name: Launch the Application and Capture Logs
         working-directory: scripts/cluster-scanner
         run: go run . | tee result.log
 
-      - name: Check if clusters have been running for more than 24 hours
-        id: check_running_clusters
+      - name: Get Clusters with More Than 24 Hours and Format Output
         working-directory: scripts/cluster-scanner
         run: |
           if grep -q "The following clusters have been running for more than 24 hours" result.log; then
             echo "CLUSTERS_FOUND=true" >> $GITHUB_ENV
+            {
+              echo 'LOG_MESSAGE<<EOF'
+              sed 's/^.*msg=//' result.log | sed -n '/The following clusters/,/$/p' | sed 's/"//g'
+              echo EOF
+            } >> "$GITHUB_ENV"
           fi
 
-      - name: Send Slack notification
+      - name: Send Slack Notification
         if: env.CLUSTERS_FOUND == 'true'
         uses: rtCamp/action-slack-notify@v2.3.2
-        with:
-          #SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-          #SLACK_TOKEN: ${{ secrets.SLACK_PRIVATE_TEAM_TOKEN }}
+        env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
           SLACK_USERNAME: "spectromate"
           SLACK_ICON_EMOJI: ":clock1:"
           SLACK_COLOR: "good"
           SLACKIFY_MARKDOWN: true
-          MESSAGE: |
-            $(cat scripts/cluster-scanner/result.log)
+          ENABLE_ESCAPES: true
+          SLACK_MESSAGE: ${{ env.LOG_MESSAGE }}
