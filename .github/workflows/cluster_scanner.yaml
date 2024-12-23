@@ -29,20 +29,37 @@ jobs:
           go-version-file: "scripts/cluster-scanner/go.mod"
 
       - name: Install dependencies
-        run: |
-          cd scripts/cluster-scanner/
-          go get ./...
+        working-directory: scripts/cluster-scanner
+        run: go get ./...
 
       - name: Execute tests
-        run: |
-          cd scripts/cluster-scanner/
-          go test ./...
+        working-directory: scripts/cluster-scanner
+        run: go test ./...
 
       - name: Execute the cluster scanner application
-        run: |
-          cd scripts/cluster-scanner/
-          go run .
+        id: run_cluster_scanner
+        working-directory: scripts/cluster-scanner
+        run: go run . | tee result.log
 
-      # Get the output
-      # Ignore Slack output if there are no clusters running
-      # Send slack notification if output is different than what was planned
+      - name: Check if clusters have been running for more than 24 hours
+        id: check_running_clusters
+        working-directory: scripts/cluster-scanner
+        run: |
+          if grep -q "The following clusters have been running for more than 24 hours" result.log; then
+            echo "CLUSTERS_FOUND=true" >> $GITHUB_ENV
+          fi
+
+      - name: Send Slack notification
+        if: env.CLUSTERS_FOUND == 'true'
+        uses: rtCamp/action-slack-notify@v2.3.2
+        with:
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_TOKEN: ${{ secrets.SLACK_PRIVATE_TEAM_TOKEN }}
+          #SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
+          SLACK_USERNAME: "spectromate"
+          SLACK_ICON_EMOJI: ":robot_face:"
+          SLACK_COLOR: "good"
+          SLACKIFY_MARKDOWN: true
+          ENABLE_ESCAPES: true
+          MESSAGE: |
+            $(cat scripts/cluster-scanner/result.log)
