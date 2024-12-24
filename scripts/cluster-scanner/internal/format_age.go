@@ -37,13 +37,19 @@ func GetFormattedAge(clusterAge time.Duration) (*string, error) {
 	}
 	var formattedString string
 	if fa.Weeks > 0 {
-		formattedString = fmt.Sprintf("%d weeks ", fa.Weeks)
+		formattedString = fmt.Sprintf("%dw", fa.Weeks)
 	}
 	if fa.Days > 0 {
-		formattedString = fmt.Sprintf("%s%d days ", formattedString, fa.Days)
+		if len(formattedString) > 0 {
+			formattedString += " "
+		}
+		formattedString = fmt.Sprintf("%s%dd", formattedString, fa.Days)
 	}
 	if fa.Hours > 0 {
-		formattedString = fmt.Sprintf("%s%d hours", formattedString, fa.Hours)
+		if len(formattedString) > 0 {
+			formattedString += " "
+		}
+		formattedString = fmt.Sprintf("%s%dh", formattedString, fa.Hours)
 	}
 	return &formattedString, nil
 }

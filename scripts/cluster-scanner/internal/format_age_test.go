@@ -89,23 +89,23 @@ func TestGetFormattedAge(t *testing.T) {
 	tc := map[string]TestCase{
 		"duration with hours": {
 			input: "2h",
-			output: "2 hours",
+			output: "2h",
 		},
 		"duration with weeks": {
 			input: "336h",
-			output: "2 weeks ",
+			output: "2w",
 		},
 		"duration with days": {
 			input: "48h",
-			output: "2 days ",
+			output: "2d",
 		},
 		"duration with hours and days": {
 			input: "74h",
-			output: "3 days 2 hours",
+			output: "3d 2h",
 		},
 		"duration with hours, days, and weeks": {
 			input: "914h",
-			output: "5 weeks 3 days 2 hours",
+			output: "5w 3d 2h",
 		},
 		"negative duration": {
 			input: "-2h",
