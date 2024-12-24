@@ -43,7 +43,7 @@ jobs:
       - name: Get Clusters with More Than 24 Hours and Format Output
         working-directory: scripts/cluster-scanner
         run: |
-          if grep -q "The following clusters have been running for more than 24 hours" result.log; then
+          if grep -q "The following clusters have been running" result.log; then
             echo "CLUSTERS_FOUND=true" >> $GITHUB_ENV
             {
               echo 'LOG_MESSAGE<<EOF'
@@ -58,7 +58,6 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
           SLACK_USERNAME: "spectromate"
-          SLACK_ICON_EMOJI: ":clock1:"
           SLACK_COLOR: "good"
           SLACKIFY_MARKDOWN: true
           ENABLE_ESCAPES: true

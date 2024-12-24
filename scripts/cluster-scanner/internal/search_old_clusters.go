@@ -24,7 +24,7 @@ func SearchOldClusters(clusters []*models.V1SpectroClusterSummary) ([]string, er
 			if err != nil {
 				return nil, err
 			}
-			message := fmt.Sprintf("-'%s' cluster (%s) - %s", cluster.Metadata.Name, cluster.SpecSummary.CloudConfig.CloudType, *age)
+			message := fmt.Sprintf("❗️%s cluster '%s' - %s ⏳", cluster.SpecSummary.CloudConfig.CloudType, cluster.Metadata.Name, *age)
 			messageArray = append(messageArray, message)
 		}
 	}
