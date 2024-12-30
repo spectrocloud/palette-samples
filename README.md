@@ -8,6 +8,10 @@ This repository contains a collection of patterns, code samples, and more to hel
 
 - [Managing Cluster Profiles with Terraform](./terraform/cluster-profiles/README.md)
 
+## Code Samples
+
+- [List Active Clusters with Palette Go SDK](./scripts/cluster-scanner/README.md)
+
 ## Contact Us
 
 If you have any questions, please reach out to us at [spectro-doc@spectrocloud.com](mailto:spectro-doc@spectrocloud.com) or join our [Slack community](https://spectrocloudcommunity.slack.com).

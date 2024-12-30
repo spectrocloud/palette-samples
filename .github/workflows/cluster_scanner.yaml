@@ -2,10 +2,10 @@ name: Cluster Scanner
 
 on:
   # For test purposes. Trigger the pipeline on pushes to the cluster-scanner branch.
-  push:
-    branches:
-      - cluster-scanner
-  # It runs every Friday, 9:30 UTC. The schedule job only works if the workflow is available in the main branch.
+  # push:
+  #   branches:
+  #     - cluster-scanner
+  # Every Friday at 9:30 UTC.
   schedule:
     - cron: "30 9 * * 5"
   workflow_dispatch:
@@ -38,7 +38,9 @@ jobs:
 
       - name: Launch the Application and Capture Logs
         working-directory: scripts/cluster-scanner
-        run: go run . | tee result.log
+        run: |
+          set -e
+          go run . | tee result.log
 
       - name: Get Clusters with More Than 24 Hours and Format Output
         working-directory: scripts/cluster-scanner
@@ -62,3 +64,14 @@ jobs:
           SLACKIFY_MARKDOWN: true
           ENABLE_ESCAPES: true
           SLACK_MESSAGE: ${{ env.LOG_MESSAGE }}
+
+      - name: Slack Notification on Failure
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2.3.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
+          SLACK_USERNAME: "spectromate"
+          SLACK_COLOR: "danger"
+          SLACKIFY_MARKDOWN: true
+          ENABLE_ESCAPES: true
+          SLACK_MESSAGE: "The cluster scan job for `${{ github.workflow }}` in `${{ github.repository }}` failed. [View details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
