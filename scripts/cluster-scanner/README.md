@@ -64,7 +64,7 @@ The **Cluster Scanner** tool uses the Palette Go SDK to scan your Palette enviro
    time=2024-12-24T11:37:33.016-03:00 level=INFO msg="Setting scope to tenant."
    time=2024-12-24T11:37:33.016-03:00 level=INFO msg="Searching for clusters..."
    time=2024-12-24T11:37:33.819-03:00 level=INFO msg="The following clusters have been running for over 24 hours. Please delete them if they're no longer needed:"
-   time=2024-12-24T11:37:33.819-03:00 level=INFO msg="❗️aws cluster 'aws-test' - 1d 22h ⏳"
+   time=2024-12-24T11:37:33.819-03:00 level=INFO msg="❗️edge-native cluster 'edge-cluster-blog' - 1d 23h ⏳"
    ```
 
 ## GitHub Actions Integration
@@ -83,16 +83,14 @@ Use the following steps to integrate the **Cluster Scanner** tool with your GitH
 
 3. Ensure the [`scripts/cluster-scanner`](../../scripts/) folder containing the **Cluster Scanner** tool is available in the root directory of your GitHub repository.
 
-4. Create a file titled `cluster_scanner.yaml` under the `.github/workflows` location and add the following content to the file.
+4. Create a file titled `cluster_scanner.yaml` under the `.github/workflows` location and add the following content.
 
    ```yaml
    name: Cluster Scanner
 
    on:
-   # Every Friday at 9:30 UTC.
    schedule:
       - cron: "30 9 * * 5"
-   workflow_dispatch:
 
    env:
    PALETTE_API_KEY: ${{ secrets.PALETTE_API_KEY }}
@@ -116,15 +114,12 @@ Use the following steps to integrate the **Cluster Scanner** tool with your GitH
          working-directory: scripts/cluster-scanner
          run: go get ./...
 
-         - name: Execute Tests
-         working-directory: scripts/cluster-scanner
-         run: go test ./...
-
-         - name: Launch the Application and Capture Logs
+         - name: Build and Run the App
          working-directory: scripts/cluster-scanner
          run: |
             set -e
-            go run . | tee result.log
+            go build -o cluster-scanner
+            ./cluster-scanner | tee result.log
 
          - name: Get Clusters with More Than 24 Hours and Format Output
          working-directory: scripts/cluster-scanner
@@ -143,7 +138,6 @@ Use the following steps to integrate the **Cluster Scanner** tool with your GitH
          uses: rtCamp/action-slack-notify@v2.3.2
          env:
             SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
-            SLACK_USERNAME: "spectromate"
             SLACK_COLOR: "good"
             SLACKIFY_MARKDOWN: true
             ENABLE_ESCAPES: true
@@ -154,7 +148,6 @@ Use the following steps to integrate the **Cluster Scanner** tool with your GitH
          uses: rtCamp/action-slack-notify@v2.3.2
          env:
             SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
-            SLACK_USERNAME: "spectromate"
             SLACK_COLOR: "danger"
             SLACKIFY_MARKDOWN: true
             ENABLE_ESCAPES: true

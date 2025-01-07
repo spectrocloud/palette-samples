@@ -1,0 +1,27 @@
+name: Cluster Scanner Test
+
+on:
+  push:
+    paths:
+      - "scripts/cluster-scanner/**"
+
+jobs:
+  scan-clusters:
+    name: cluster-scan-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "scripts/cluster-scanner/go.mod"
+
+      - name: Install Dependencies
+        working-directory: scripts/cluster-scanner
+        run: go get ./...
+
+      - name: Execute Tests
+        working-directory: scripts/cluster-scanner
+        run: go test ./...

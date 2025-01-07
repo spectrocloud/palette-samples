@@ -1,14 +1,8 @@
 name: Cluster Scanner
 
 on:
-  # For test purposes. Trigger the pipeline on pushes to the cluster-scanner branch.
-  # push:
-  #   branches:
-  #     - cluster-scanner
-  # Every Friday at 9:30 UTC.
   schedule:
     - cron: "30 9 * * 5"
-  workflow_dispatch:
 
 env:
   PALETTE_API_KEY: ${{ secrets.PALETTE_API_KEY }}
@@ -32,15 +26,12 @@ jobs:
         working-directory: scripts/cluster-scanner
         run: go get ./...
 
-      - name: Execute Tests
-        working-directory: scripts/cluster-scanner
-        run: go test ./...
-
-      - name: Launch the Application and Capture Logs
+      - name: Build and Run the App
         working-directory: scripts/cluster-scanner
         run: |
           set -e
-          go run . | tee result.log
+          go build -o cluster-scanner
+          ./cluster-scanner | tee result.log
 
       - name: Get Clusters with More Than 24 Hours and Format Output
         working-directory: scripts/cluster-scanner
@@ -59,7 +50,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.3.2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
-          SLACK_USERNAME: "spectromate"
           SLACK_COLOR: "good"
           SLACKIFY_MARKDOWN: true
           ENABLE_ESCAPES: true
@@ -70,7 +60,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.3.2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PRIVATE_TEAM_WEBHOOK }}
-          SLACK_USERNAME: "spectromate"
           SLACK_COLOR: "danger"
           SLACKIFY_MARKDOWN: true
           ENABLE_ESCAPES: true
